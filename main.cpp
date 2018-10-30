@@ -12,8 +12,30 @@ mt19937 rng;
 
 int generateRandomInt(int min, int max);
 void printArray(int *array, size_t size);
-void heapsort(int* array, size_t size);
+void heapsortmax(int* array, size_t size);
 bool validate(int* array, size_t size);
+
+void heapifymax(int array[], size_t size, int i)
+{
+    int mayor = i;
+    int izq = 2*i + 1;
+    int der = 2*i + 2;
+
+    if (izq < size && array[izq] > array[mayor])
+        mayor = izq;
+
+    if (der < size && array[der] > array[mayor])
+        mayor = der;
+
+
+    if (mayor != i)
+    {
+        swap(array[i], array[mayor]);
+        heapifymax(array, size, mayor);
+    }
+
+}
+
 
 int main(int argc, char *argv[]) {
     rng.seed(random_device()());
@@ -28,11 +50,12 @@ int main(int argc, char *argv[]) {
     }
 
     printArray(numbers, numberOfElements);
-    heapsort(numbers, numberOfElements);
+    cout << endl;
+    heapsortmax(numbers, numberOfElements);
+    cout << endl;
     printArray(numbers, numberOfElements);
+    cout << endl;
     assert(validate(numbers, numberOfElements) && "The sort is not ordering all the elements");
-
-    system("read");
     return EXIT_SUCCESS;
 }
 
@@ -48,9 +71,17 @@ void printArray(int *array, size_t size) {
     cout << endl;
 }
 
-void heapsort(int* array, size_t size) {
-    // TODO
-}
+void heapsortmax(int* array, size_t size){
+    for (int i = size / 2 - 1; i >= 0; i--)
+        heapifymax(array, size, i);
+
+    for (int i=size-1; i>=0; i--)
+    {
+        swap(array[0], array[i]);
+        heapifymax(array, i, 0);
+    }
+};
+
 
 bool validate(int* array, size_t size) {
     for (int i = 0; i < size - 1; i++) {
